@@ -1,0 +1,34 @@
+etoken.c (work in progress)
+
+A existence-table-based tokenizer implemented with hashes of hashes.
+
+And that's it with the fancy words from me. I am not a C programmer. This
+little program is a solution to the problem posed at
+
+https://github.com/glts/Text-Deva/blob/master/lib/Text/Deva.pm#L186
+
+Given a list of token definitions, ie. the existence table,
+
+ab
+def
+abcd
+
+a hash of hashes is constructed so as to serve as a model of the structure of
+all valid tokens. At second thought some kind of tree structure might have
+been more appropriate.
+
+                           a*
+                          / \
+                         e*  b
+                            / \
+                           c*  d*
+
+This structure is then traversed repeatedly during the tokenization of some
+input. Since possible endpoints are marked specially in the hash of hashes all
+and only valid tokens are recognized. For the hash of hashes pictured above,
+while "abc" would be a valid token, "ab" would not.
+
+The Perl method given above has the flaw that it requires all possible
+prefixes of a token to be tokens too: A token "abcd" requires tokens "abc",
+"ab", "a" to exist. Etoken does not have this limitation. On the other hand,
+the Perl version does case folding, which etoken does not.
