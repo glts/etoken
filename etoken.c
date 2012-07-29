@@ -2,6 +2,9 @@
 #include <stdlib.h>
 
 #include "etoken.h"
+#ifdef CASEFOLD
+# include <ctype.h>
+#endif
 
 /*
  * Terminology -- TODO clean up
@@ -203,10 +206,18 @@ tEntry *insertEntry(tEntry **ht, uint32_t val, unsigned int size)
     return pte;
 }
 
+/* Look up a value in the hash table given. Returns a pointer to an entry or
+ * NULL. With the CASEFOLD feature enabled it will lowercase ASCII lookup keys
+ * first. */
 tEntry *find(tEntry **ht, uint32_t val, unsigned int size) // size needs to go
 {
     tEntry *pte;
     unsigned int hi;
+
+#ifdef CASEFOLD
+    if (val < 0x80)
+        val = tolower(val);
+#endif
 
     hi = UCHASH(val, size);
 
@@ -278,24 +289,24 @@ int tokenize(uint32_t **tokens, tEntry **tokenht, const uint32_t *uc_str)
     return numtokens;
 }
 
-/* TODO prettify */
-void printDict(tEntry **at, int size, int level, int verbose)
+/* Prints the token hash tables. Possible endpoints are marked with an
+ * asterisk. */
+void printDict(tEntry **ht, int size, int level, int verbose)
 {
     int i, j, k;
-    tEntry *atlink;
+    tEntry *pte;
 
     /* step through all buckets in this hash */
     for (i = 0; i < size; i++) {
-        if (at[i] != NULL) {
+        if (ht[i] != NULL) {
             for (j = 0; j < level; j++)
                 printf("\t");
-            printf("[%d]: head of a linked list\n", i);
-            /* atlink is a pointer to the head of a linked list */
-            for (atlink = at[i], k = 0; atlink != NULL; atlink = atlink->nextEntry, k++) {
+            printf("[%d]\n", i);
+            for (pte = ht[i], k = 0; pte != NULL; pte = pte->nextEntry, k++) {
                 for (j = 0; j < level; j++)
                     printf("\t");
-                printf("{%d}: value '%x'%c\n", k, atlink->val, atlink->endpoint ? '*' : ' ');
-                printDict(atlink->tEntries, SUBSIZE, level+1, verbose);
+                printf("{%d}: value '%x'%c\n", k, pte->val, pte->endpoint ? '*' : ' ');
+                printDict(pte->tEntries, SUBSIZE, level+1, verbose);
             }
         }
         else if (verbose) {

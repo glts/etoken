@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+/* enable ASCII-only case-folding for lookups */
+#define CASEFOLD
+
 /* maximum length of a single token in UC codepoints including 0 terminator */
 #define TOKENMAX 8
 
