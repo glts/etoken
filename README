@@ -28,7 +28,8 @@ input. Since possible endpoints are marked specially in the hash of hashes all
 and only valid tokens are recognized. For the hash of hashes pictured above,
 while "abc" would be a valid token, "ab" would not.
 
-The Perl method given above has the flaw that it requires all possible
+The Perl function given above has the flaw that it requires all possible
 prefixes of a token to be tokens too: A token "abcd" requires tokens "abc",
 "ab", "a" to exist. Etoken does not have this limitation. On the other hand,
-the Perl version does case folding, which etoken does not.
+the Perl version does Unicode case folding; it would be foolish to reimplement
+that in C, so etoken only does primitive ASCII case folding (optional).
