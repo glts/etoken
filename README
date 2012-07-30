@@ -1,6 +1,7 @@
-etoken.c (work in progress)
+etoken
+------
 
-A existence-table-based tokenizer implemented with hashes of hashes.
+An existence-table-based tokenizer implemented with hashes of hashes.
 
 And that's it with the fancy words from me. I am not a C programmer. This
 little program is a solution to the problem posed at
@@ -9,9 +10,9 @@ https://github.com/glts/Text-Deva/blob/master/lib/Text/Deva.pm#L186
 
 Given a list of token definitions, ie. the existence table,
 
-ab
-def
-abcd
+a
+ae
+abc
 
 a hash of hashes is constructed so as to serve as a model of the structure of
 all valid tokens. At second thought some kind of tree structure might have

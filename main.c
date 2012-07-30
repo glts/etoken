@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     for (i = 0; i < ndefs; i++) /* free memory of token definitions */
         free(toksdef[i]);
 
-    printDict(tokenht, INITSIZE, 0, 0); /* print for debugging */
+    printDict(tokenht, INITSIZE, 0); /* print for debugging */
 
 
     /* Tokenize a file */

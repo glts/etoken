@@ -1,0 +1,6 @@
+TODO
+
+- Use a serious integer hash function!
+- Make Unicode conversion robust, reject invalid input
+- It would be more convenient for a client to input chars instead of Unicode
+  codepoints
