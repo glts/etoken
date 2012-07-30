@@ -34,3 +34,9 @@ prefixes of a token to be tokens too: A token "abcd" requires tokens "abc",
 "ab", "a" to exist. Etoken does not have this limitation. On the other hand,
 the Perl version does Unicode case folding; it would be foolish to reimplement
 that in C, so etoken only does primitive ASCII case folding (optional).
+
+Check out the example run in main.c, which will read the token definitions in
+"exampledef.txt" and print the separate tokens in "example.txt":
+
+make
+./etoken

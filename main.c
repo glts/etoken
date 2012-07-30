@@ -9,78 +9,74 @@
 int readTokenDefinitions(uint32_t **tokdefs, FILE *pf);
 void printTokens(uint32_t **tokens, unsigned int size);
 
+/* Example etoken client. */
 int main(int argc, char *argv[])
 {
     int i;
     uint32_t *toksdef[64]; /* space for 64 token definitions */
     int ndefs; /* number of token definitions */
     tEntry **tokenht;
+    FILE *fp;
 
-    /* 1. Construct token hash */
+    /* Read token definitions from file and create the hash */
 
-    /* Read tokens definitions from file */
-
-    FILE *toksfile;
-    if ((toksfile = fopen("toksdef.txt", "r")) == NULL)
+    if ((fp = fopen("exampledef.txt", "r")) == NULL)
         return 1;
-    ndefs = readTokenDefinitions(toksdef, toksfile);
-    if (fclose(toksfile) != 0)
+    ndefs = readTokenDefinitions(toksdef, fp);
+    if (fclose(fp) != 0)
         return 1;
-
-    printf("Tokcount is %d\n", ndefs);
-
-    /* Create token hash structure */
 
     tokenht = createTokenHash(toksdef, ndefs);
 
     for (i = 0; i < ndefs; i++) /* free memory of token definitions */
         free(toksdef[i]);
 
-    printDict(tokenht, INITSIZE, 0); /* print for debugging */
+    /* Print the token hash */
+    printf("Created token hash for %d token definitions\n", ndefs);
+    printDict(tokenht, INITSIZE, 0);
 
 
     /* Tokenize a file */
 
-    FILE *fin;
-    if ((fin = fopen("test.txt", "r")) == NULL)
+    if ((fp = fopen("example.txt", "r")) == NULL)
         return 1;
 
-    int numtoks = 0;
+    int ntokens = 0;
     int nalloc = DYNTOKENS;
-    char filebuf[DYNTOKENS];
+    char filebuf[DYNTOKENS*4];
     uint32_t tokbuf[DYNTOKENS];
     uint32_t **dyntokens; /* dynamic storage for arbitrary num of tokens */
     dyntokens = malloc(sizeof(*dyntokens)*nalloc); /* start out with space for 256 toks */
-    uint32_t **curdyntok = dyntokens;
-    while (fgets(filebuf, DYNTOKENS, fin)) {
+    uint32_t **pdyntok = dyntokens;
+    while (fgets(filebuf, DYNTOKENS*4, fp)) {
         utf8_to_uc(tokbuf, filebuf, DYNTOKENS);
-        if (numtoks >= (nalloc-DYNTOKENS)) {
+        if (ntokens >= (nalloc-DYNTOKENS)) {
             nalloc *= 2;
             dyntokens = realloc(dyntokens, (sizeof(*dyntokens)*nalloc));
         }
-        curdyntok = &dyntokens[numtoks];
-        numtoks += tokenize(curdyntok, tokenht, tokbuf);
+        pdyntok = &dyntokens[ntokens];
+        ntokens += tokenize(pdyntok, tokenht, tokbuf);
     }
 
-    if (fclose(fin) != 0)
+    if (fclose(fp) != 0)
         return 1;
 
-    printf("Found %d tokens (memory: %d)!\n", numtoks, nalloc);
-
-    //printTokens(dyntokens, numtoks);
+    printf("\nFound %d tokens (memory: %d)!\n", ntokens, nalloc);
+    printTokens(dyntokens, ntokens);
 
     /* deallocate everything */
-    for (i = 0; i < numtoks; i++)
+    for (i = 0; i < ntokens; i++)
         free(dyntokens[i]);
     free(dyntokens);
 
-    /* destroy token hash */
-    destroyTokenHash(tokenht); // check return value
+    destroyTokenHash(tokenht); /* destroy token hash */
 
     return 0;
 }
 
-int readTokenDefinitions(uint32_t **tokdefs, FILE *pf)
+/* Reads token definitions from a file into an array. The caller must free the
+ * memory after use. */
+int readTokenDefinitions(uint32_t **tokdefs, FILE *fp)
 {
     int i;
     int numtok = 0;
@@ -89,7 +85,7 @@ int readTokenDefinitions(uint32_t **tokdefs, FILE *pf)
     int tokcount = 0;
     uint32_t *ptoksdef;
 
-    while (fgets(utf8buf, sizeof(utf8buf), pf)) {
+    while (fgets(utf8buf, sizeof(utf8buf), fp)) {
         numtok = utf8_to_uc(ucbuf, utf8buf, TOKENMAX); /* includes newline */
         ptoksdef = malloc(sizeof(uint32_t)*numtok); /* cut off newline */
 
@@ -102,8 +98,8 @@ int readTokenDefinitions(uint32_t **tokdefs, FILE *pf)
     return tokcount;
 }
 
-/* Prints tokens in an array of pointers to tokens. The size of the array
- * of pointers needs to be given explicitly. */
+/* Prints tokens in an array of pointers to tokens. The size of the array of
+ * pointers needs to be given explicitly. */
 void printTokens(uint32_t **tokens, unsigned int size)
 {
     int i;
