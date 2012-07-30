@@ -218,7 +218,7 @@ int tokenize(uint32_t **tokens, tEntry **ht, const uint32_t *uc_str)
      * found in the hash; else stop, create a new token, push it to the tokens
      * array and restart one element further on in the stream. */
     while (puc[cursor] != 0) {
-        if ((te = find(pht, puc[cursor], end > 0 ? SUBSIZE : INITSIZE)) != NULL) {
+        if ((te = find(pht, puc[cursor], cursor > 0 ? SUBSIZE : INITSIZE)) != NULL) {
             cursor++;
             if (te->endpoint) /* is a possible endpoint */
                 end = cursor;
