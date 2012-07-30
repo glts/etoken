@@ -210,11 +210,11 @@ int tokenize(uint32_t **tokens, tEntry **ht, const uint32_t *uc_str)
 
     puc = uc_str;
     cursor = 0;
-    end = 0; /* points one past last element in tokbuf */
+    end = 0; /* points one past last element in input */
     ntokens = 0;
     pht = ht;
 
-    /* Scan throug the input: keep building a token while the elements can be
+    /* Scan through the input: keep building a token while the elements can be
      * found in the hash; else stop, create a new token, push it to the tokens
      * array and restart one element further on in the stream. */
     while (puc[cursor] != 0) {
