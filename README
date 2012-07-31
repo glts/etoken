@@ -40,3 +40,6 @@ Check out the example run in main.c, which will read the token definitions in
 
 make
 ./etoken
+
+The Perl script etoken.pl does the same thing. For large data, the C version
+is almost 20 times as fast on my machine.
