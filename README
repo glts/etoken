@@ -6,7 +6,7 @@ An existence-table-based tokenizer implemented with hashes of hashes.
 And that's it with the fancy words from me. I am not a C programmer. This
 little program is a solution to the problem posed at
 
-https://github.com/glts/Text-Deva/blob/master/lib/Text/Deva.pm#L186
+https://github.com/glts/Text-Deva/blob/master/lib/Text/Deva.pm#L194
 
 Given a list of token definitions, ie. the existence table,
 
@@ -40,3 +40,6 @@ Check out the example run in main.c, which will read the token definitions in
 
 make
 ./etoken
+
+The Perl script etoken.pl does the same thing. For large data, the C version
+is almost 20 times as fast on my machine.
