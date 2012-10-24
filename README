@@ -1,12 +1,14 @@
 etoken
 ------
 
+*UPDATE* The following problem in the Perl module has since been resolved.
+
 An existence-table-based tokenizer implemented with hashes of hashes.
 
 And that's it with the fancy words from me. I am not a C programmer. This
 little program is a solution to the problem posed at
 
-https://github.com/glts/Text-Deva/blob/master/lib/Text/Deva.pm#L194
+https://github.com/glts/Lingua-Deva/blob/master/lib/Lingua/Deva.pm#L187
 
 Given a list of token definitions, ie. the existence table,
 
